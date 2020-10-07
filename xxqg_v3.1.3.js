@@ -65,15 +65,15 @@ function insertLearnedArticle(title, date) {
 /********************************************数据库控制函数结束***********************************************/
 
 var asub = 2; //订阅数
-var aCount = 6;//文章默认学习篇数
-var vCount = 6;//小视频默认学习个数
+var aCount = 6;//文章默认工作篇数
+var vCount = 6;//小视频默认工作个数
 var cCount = 2;//收藏+分享+评论次数
 
 var aTime = 70;//有效阅读一分钟1分*6
-var vTime = 15;//每个小视频学习-15秒
+var vTime = 15;//每个小视频工作-15秒
 var rTime = 370;//广播收听6分 * 60 = 360秒
 
-var aCatlog = files.read("./article.txt");//文章学习类别，可自定义修改为“要闻”、“新思想”等
+var aCatlog = files.read("./article.txt");//文章工作类别，可自定义修改为“要闻”、“新思想”等
 
 var myScores = {};//分数
 
@@ -105,8 +105,8 @@ function randomNum(minNum, maxNum) {
 } 
 
 /**
- * @description: 文章学习计时(弹窗)函数
- * @param: n-文章标号 seconds-学习秒数
+ * @description: 文章工作计时(弹窗)函数
+ * @param: n-文章标号 seconds-工作秒数
  * @return: null
  */
 function article_timing(n, seconds) {
@@ -122,9 +122,9 @@ function article_timing(n, seconds) {
             console.error("当前已离开第" + (n + 1) + "文章界面，请重新返回文章页面...");
             delay(2);
         }
-        if (i % 5 == 0)//每5秒打印一次学习情况
+        if (i % 5 == 0)//每5秒打印一次工作情况
         {
-            console.info("第" + (n + 1) + "篇文章已经学习" + (i + 1) + "秒,剩余" + (seconds - i - 1) + "秒!");
+            console.info("第" + (n + 1) + "篇文章已经工作" + (i + 1) + "秒,剩余" + (seconds - i - 1) + "秒!");
         }
         sleep(1000);
         if (i % 10 == 0)//每10秒滑动一次，如果android版本<7.0请将此滑动代码删除
@@ -141,8 +141,8 @@ function article_timing(n, seconds) {
 }
 
 /**
- * @description: 视频学习计时(弹窗)函数
- * @param: n-视频标号 seconds-学习秒数
+ * @description: 视频工作计时(弹窗)函数
+ * @param: n-视频标号 seconds-工作秒数
  * @return: null
  */
 function video_timing_bailing(n, seconds) {
@@ -158,8 +158,8 @@ function video_timing_bailing(n, seconds) {
 }
 
 /**
- * @description: 新闻联播小视频学习计时(弹窗)函数
- * @param: n-视频标号 seconds-学习秒数
+ * @description: 新闻联播小视频工作计时(弹窗)函数
+ * @param: n-视频标号 seconds-工作秒数
  * @return: null
  */
 function video_timing_news(n, seconds) {
@@ -176,8 +176,8 @@ function video_timing_news(n, seconds) {
 }
 
 /**
- * @description: 广播学习计时(弹窗)函数
- * @param: r_time-已经收听的时间 seconds-学习秒数
+ * @description: 广播工作计时(弹窗)函数
+ * @param: r_time-已经收听的时间 seconds-工作秒数
  * @return: null
  */
 function radio_timing(r_time, seconds) {
@@ -248,15 +248,15 @@ function getYestardayDateString() {
 }
 
 /**
- * @description: 文章学习函数  (阅读文章+文章学习时长)---6+6=12分
+ * @description: 文章工作函数  (阅读文章+文章工作时长)---6+6=12分
  * @param: null
  * @return: null
  */
 function articleStudy(x) {
-    while (!desc("学习").exists());//等待加载出主页
+    while (!desc("工作").exists());//等待加载出主页
     var listView = className("ListView");//获取文章ListView控件用于翻页
     if (x == 0) {
-        desc("学习").click();//点击主页正下方的"学习"按钮
+        desc("工作").click();//点击主页正下方的"工作"按钮
         delay(2);
         click(aCatlog);
     }
@@ -286,12 +286,12 @@ function articleStudy(x) {
                     t++;
                     back();
                     if (rTime != 0) {
-                        while (!desc("学习").exists());
+                        while (!desc("工作").exists());
                         console.info("因为广播被打断，重新收听广播...");
                         delay(0.5);
                         listenToRadio();//听电台广播
-                        while (!desc("学习").exists());
-                        desc("学习").click();
+                        while (!desc("工作").exists());
+                        desc("工作").click();
                     }
                     delay(2);
                     continue;
@@ -341,13 +341,13 @@ function articleStudy(x) {
                     //没阅读过，添加到数据库
                     insertLearnedArticle(currentNewsTitle, date_string);
                 }
-                console.log("正在学习第" + (i + 1) + "篇文章,标题：", currentNewsTitle);
+                console.log("正在工作第" + (i + 1) + "篇文章,标题：", currentNewsTitle);
                 fail = 0;//失败次数清0
-                //开始循环进行文章学习
+                //开始循环进行文章工作
                 article_timing(i, aTime);
                 delay(2);
                 back();//返回主界面
-                while (!desc("学习").exists());//等待加载出主页
+                while (!desc("工作").exists());//等待加载出主页
                 delay(2);
                 i++;
                 t++;//t为实际点击的文章控件在当前布局中的标号,和i不同,勿改动!
@@ -364,13 +364,13 @@ function articleStudy(x) {
 }
 
 /**
- * @description:新闻联播小视频学习函数
+ * @description:新闻联播小视频工作函数
  * @param: null
  * @return: null
  */
 function videoStudy_news() {
     delay(1)
-    desc("学习").click();
+    desc("工作").click();
     delay(2)
     click("电视台");
     delay(1)
@@ -379,10 +379,10 @@ function videoStudy_news() {
     var listView = className("ListView");//获取listView视频列表控件用于翻页
     for (var i = 0, t = 0; i < vCount;) {
         if ((click("中央广播电视总台", t) || click("央视网", t)) == true) {
-            console.log("即将学习第" + (i + 1) + "个视频!");
-            video_timing_news(i, vTime);//学习每个新闻联播小片段
+            console.log("即将工作第" + (i + 1) + "个视频!");
+            video_timing_news(i, vTime);//工作每个新闻联播小片段
             back();//返回联播频道界面
-            while (!desc("学习").exists());//等待加载出主页
+            while (!desc("工作").exists());//等待加载出主页
             delay(1);
             i++;
             t++;
@@ -402,7 +402,7 @@ function videoStudy_news() {
 
 
 /**
- * @description: 听“电台”新闻广播函数  (视听学习+视听学习时长)---6+6=12分
+ * @description: 听“电台”新闻广播函数  (视听工作+视听工作时长)---6+6=12分
  * @param: null
  * @return: null
  */
@@ -439,12 +439,12 @@ function start_app() {
     console.setPosition(0, device.height / 2);//部分华为手机console有bug请注释本行
     console.show();//部分华为手机console有bug请注释本行
     console.log("正在启动app...");
-    if (!launchApp("学习强国"))//启动学习强国app
+    if (!launchApp("工作强国"))//启动工作强国app
     {
-        console.error("找不到学习强国App!");
+        console.error("找不到工作强国App!");
         return;
     }
-    while (!desc("学习").exists()) {
+    while (!desc("工作").exists()) {
         console.log("正在等待加载出主页");
         delay(1);
     }
@@ -459,8 +459,8 @@ function start_app() {
  */
 function localChannel() {
     delay(1)
-    while (!desc("学习").exists());//等待加载出主页
-    desc("学习").click();
+    while (!desc("工作").exists());//等待加载出主页
+    desc("工作").click();
     console.log("点击本地频道");
     if (text("新思想").exists()) {
         text("新思想").findOne().parent().parent().child(3).click();
@@ -481,7 +481,7 @@ function localChannel() {
  * @return: null
  */
 function getScores(i) {
-    while (!desc("学习").exists());//等待加载出主页
+    while (!desc("工作").exists());//等待加载出主页
     console.log("正在获取积分...");
     while (!text("积分明细").exists()) {
         if (id("comm_head_xuexi_score").exists()) {
@@ -525,8 +525,8 @@ function getScores(i) {
     if (aCount != 0) {
         aCount = aCount + randomNum(0, 1)
     }
-    vCount = 6 - myScores["视听学习"];
-    rTime = (6 - myScores["视听学习时长"]) * 60;
+    vCount = 6 - myScores["视听工作"];
+    rTime = (6 - myScores["视听工作时长"]) * 60;
     asub = 2 - myScores["订阅"];
     sCount = 2 - myScores["分享"] * 2
     cCount = 1 - myScores["发表观点"]
@@ -535,9 +535,9 @@ function getScores(i) {
     console.log('分享：' + sCount.toString() + '个')
     console.log('订阅：' + asub.toString() + '个')
     console.log('剩余文章：' + aCount.toString() + '篇')
-    console.log('剩余每篇文章学习时长：' + aTime.toString() + '秒')
+    console.log('剩余每篇文章工作时长：' + aTime.toString() + '秒')
     console.log('剩余视频：' + vCount.toString() + '个')
-    console.log('剩视听学习时长：' + rTime.toString() + '秒')
+    console.log('剩视听工作时长：' + rTime.toString() + '秒')
 
     delay(1);
     back();
@@ -572,18 +572,18 @@ function stopRadio() {
 }
 
 /**
-@description: 学习平台订阅
+@description: 工作平台订阅
 @param: null
 @return: null
 */
 function sub() {
-    desc("学习").click();
+    desc("工作").click();
     delay(2);
     click("订阅");
     delay(2);
     click("添加");
     delay(2);
-    click("学习平台", 0); // text("学习平台").findOne().click() == click("学习平台", 0) 解决订阅问题
+    click("工作平台", 0); // text("工作平台").findOne().click() == click("工作平台", 0) 解决订阅问题
     delay(0.5)
     click("强国号", 0)
     let sublist = className("ListView").findOnce(0);
@@ -604,12 +604,12 @@ function sub() {
                 }
             })
         } else if (text("你已经看到我的底线了").exists()) {
-            console.log("尝试订阅学习平台")
+            console.log("尝试订阅工作平台")
             back();
             delay(1);
             click("添加");
             delay(1);
-            click("学习平台", 0);
+            click("工作平台", 0);
             delay(2);
             let sublist = className("ListView").findOnce(1);
             while (i < asub) {
@@ -660,7 +660,7 @@ function main() {
     }
     while (aCount != 0) {
         var x = 0;
-        articleStudy(x);//学习文章，包含点赞、分享和评论
+        articleStudy(x);//工作文章，包含点赞、分享和评论
         console.info("等待十秒，然后确认文章是否已满分。");
         delay(10);
         getScores(1);
